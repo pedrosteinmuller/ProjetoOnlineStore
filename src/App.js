@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import * as api from './services/api';
 
-class App extends Component {
-  render() {
-    return (
-      <div>
-        {api.getCategories().then((categories) => { console.log(categories); })}
-      </div>
-    );
-  }
+api.getCategories().then((categories) => { console.log(categories); });
+
+function App() {
+  return (
+    <div>App</div>
+  );
 }
 
 export default App;
