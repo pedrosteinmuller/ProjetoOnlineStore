@@ -1,0 +1,8 @@
+.button-categories {
+    display: flex;
+  margin: 3px;
+  width: 150px;
+  height: 40px;
+  align-items: center;
+  justify-content: space-around;
+}
