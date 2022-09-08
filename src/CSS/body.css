@@ -1,0 +1,14 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.button-categories {
+  align-items: center;
+  display: flex;
+  height: 40px;
+  justify-content: space-around;
+  margin: 3px;
+  width: 150px;
+}
