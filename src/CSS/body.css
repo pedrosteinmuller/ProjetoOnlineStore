@@ -1,8 +1,8 @@
 .button-categories {
-    display: flex;
+  display: flex;
   margin: 3px;
-  width: 150px;
   height: 40px;
+  width: 150px;  
   align-items: center;
   justify-content: space-around;
 }
