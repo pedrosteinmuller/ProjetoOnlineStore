@@ -9,11 +9,6 @@ class Home extends Component {
         >
           Digite algum termo de pesquisa ou escolha uma categoria.
         </section>
-        {/* <button
-          type="submit"
-        >
-          Pesquisar
-        </button> */}
       </main>
     );
   }
