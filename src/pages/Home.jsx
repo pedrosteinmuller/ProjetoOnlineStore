@@ -1,8 +1,6 @@
 import { Component } from 'react';
-import { getCategories } from '../services/api';
-
-// import { getProductsFromCategoryAndQuery } from '../services/api';
 import { Link } from 'react-router-dom';
+import { getCategories } from '../services/api';
 
 class Home extends Component {
   constructor() {
