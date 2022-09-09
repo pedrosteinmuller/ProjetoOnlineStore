@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
+import { getCategories, getProductsFromCategoryAndQuery, catById } from '../services/api';
 import '../CSS/home.css';
 
 class Home extends Component {
@@ -10,6 +10,7 @@ class Home extends Component {
       categories: [],
       queryValue: '',
       products: [],
+      clickCategories: [],
     };
   }
 
@@ -21,6 +22,7 @@ class Home extends Component {
   }
 
   handleInput = ({ target }) => {
+    console.log(target);
     const { value } = target;
     this.setState({
       queryValue: value,
@@ -29,14 +31,23 @@ class Home extends Component {
 
   handleClickProducts = async () => {
     const { queryValue } = this.state;
-    const fetchProducts = await getProductsFromCategoryAndQuery(queryValue);
+    const fetchProducts = await getProductsFromCategoryAndQuery(undefined, queryValue);
+    console.log(fetchProducts);
     this.setState({
       products: fetchProducts.results,
     });
   };
 
+  handleClickCategories = async (id) => {
+    const products = await catById(id);
+    console.log(products);
+    this.setState({
+      clickCategories: products.results,
+    });
+  };
+
   render() {
-    const { categories, products, queryValue } = this.state;
+    const { categories, products, queryValue, clickCategories } = this.state;
     return (
       <main>
         <section
@@ -74,10 +85,22 @@ class Home extends Component {
               data-testid="category"
               name="category"
               key={ category.id }
+              onClick={ () => this.handleClickCategories(category.id) }
             >
               {category.name}
             </button>
           ))}
+        </section>
+        <section>
+          {
+            clickCategories.map((product) => (
+              <div key={ product.id } data-testid="product">
+                <h4>{product.title}</h4>
+                <h5>{`Preço: R$ ${product.price}`}</h5>
+                <img src={ product.thumbnail } alt={ product.title } />
+              </div>
+            ))
+          }
         </section>
         <section className="product">
           {products.map((product) => (
