@@ -32,7 +32,6 @@ class Home extends Component {
   handleClickProducts = async () => {
     const { queryValue } = this.state;
     const fetchProducts = await getProductsFromCategoryAndQuery(undefined, queryValue);
-    console.log(fetchProducts);
     this.setState({
       products: fetchProducts.results,
     });
