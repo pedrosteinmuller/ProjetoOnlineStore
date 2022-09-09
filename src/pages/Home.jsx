@@ -40,7 +40,6 @@ class Home extends Component {
 
   handleClickCategories = async (id) => {
     const products = await catById(id);
-    console.log(products);
     this.setState({
       clickCategories: products.results,
     });
