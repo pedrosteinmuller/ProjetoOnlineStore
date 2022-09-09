@@ -53,12 +53,6 @@ class Home extends Component {
           className="categories"
         >
           Digite algum termo de pesquisa ou escolha uma categoria.
-          <div>
-            <Link
-              data-testid="shopping-cart-button"
-              to="/Cart"
-            />
-          </div>
           <input
             data-testid="query-input"
             type="text"
@@ -92,26 +86,46 @@ class Home extends Component {
         <section>
           {
             clickCategories.map((product) => (
-              <div key={ product.id } data-testid="product">
-                <h4>{product.title}</h4>
-                <h5>{`Preço: R$ ${product.price}`}</h5>
-                <img src={ product.thumbnail } alt={ product.title } />
-              </div>
+              <Link
+                to={ `/ProductsDetails/${product.id}` }
+                key={ product.id }
+                data-testid="product-detail-link"
+              >
+                <div key={ product.id } data-testid="product">
+                  <h4>{product.title}</h4>
+                  <h5>{`Preço: R$ ${product.price}`}</h5>
+                  <img src={ product.thumbnail } alt={ product.title } />
+                </div>
+              </Link>
             ))
           }
         </section>
         <section className="product">
           {products.map((product) => (
-            <div data-testid="product" key={ product.id } className="products">
-              <h4>{products.title}</h4>
-              <h5>{`Preço: R$ ${product.price}`}</h5>
-              <img src={ product.thumbnail } alt={ product.title } />
-            </div>
+            <Link
+              to={ `/ProductsDetails/${product.id}` }
+              key={ product.id }
+              data-testid="product-detail-link"
+            >
+              <div data-testid="product" className="products">
+                <h4>{products.title}</h4>
+                <h5>{`Preço: R$ ${product.price}`}</h5>
+                <img src={ product.thumbnail } alt={ product.title } />
+              </div>
+            </Link>
           ))}
           { products.length === 0 && (
             <p>Nenhum produto foi encontrado</p>
           )}
         </section>
+        <div>
+          <Link
+            data-testid="shopping-cart-button"
+            to="/Cart"
+          >
+            Carrinho
+          </Link>
+        </div>
       </main>
     );
   }
