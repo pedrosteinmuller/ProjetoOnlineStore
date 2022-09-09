@@ -1,0 +1,35 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  display: flex;
+}
+
+.product {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.products {
+  border: 1px solid black;
+  height: 200px;
+  margin: 5px;
+  text-align: center;
+  width: 250px;
+}
+
+.categories {
+  border: 1px solid black;
+  margin-left: 10px;
+  margin-right: 20px;
+  min-width: 250px;
+  padding: 20px;
+}
+
+/* css feito com ajuda do amigo Higor Maranhão para organização dos itens
+e ficar de melhor entendimento durante a elaboração do projeto */
