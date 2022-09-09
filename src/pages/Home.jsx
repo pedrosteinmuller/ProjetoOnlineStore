@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
+import '../CSS/home.css';
 
 class Home extends Component {
   constructor() {
@@ -40,6 +41,7 @@ class Home extends Component {
       <main>
         <section
           data-testid="home-initial-message"
+          className="categories"
         >
           Digite algum termo de pesquisa ou escolha uma categoria.
           <div>
@@ -64,7 +66,7 @@ class Home extends Component {
             Pesquisar
           </button>
         </section>
-        <aside>
+        <section>
           {categories.map((category) => (
             <button
               className="button-categories"
@@ -76,14 +78,14 @@ class Home extends Component {
               {category.name}
             </button>
           ))}
-        </aside>
-        <section>
+        </section>
+        <section className="product">
           {products.map((product) => (
-            <section data-testid="product" key={ product.id }>
+            <div data-testid="product" key={ product.id } className="products">
               <h4>{products.title}</h4>
               <h5>{`Preço: R$ ${product.price}`}</h5>
               <img src={ product.thumbnail } alt={ product.title } />
-            </section>
+            </div>
           ))}
           { products.length === 0 && (
             <p>Nenhum produto foi encontrado</p>
