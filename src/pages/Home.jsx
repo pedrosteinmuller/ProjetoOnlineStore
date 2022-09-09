@@ -11,6 +11,7 @@ class Home extends Component {
       queryValue: '',
       products: [],
       clickCategories: [],
+      isDisabled: false,
     };
   }
 
@@ -44,8 +45,40 @@ class Home extends Component {
     });
   };
 
+  storageProducts = (element) => {
+    this.setState({ isDisabled: true });
+    const productList = getCartItems();
+    const test = productList.some((item) => item.title === element.title);
+    if (test) {
+      productList.forEach((secondItem) => {
+        if (secondItem.title === element.title) {
+          removeItem(secondItem);
+          const storage = {
+            title: secondItem.title,
+            price: secondItem.price,
+            thumbnail: secondItem.thumbnail,
+            quantity: secondItem.quantity + 1,
+            available_quantity: secondItem.available_quantity,
+          };
+          addItem(storage);
+        }
+      });
+    } else {
+      const storage = {
+        title: element.title,
+        price: element.price,
+        thumbnail: element.thumbnail,
+        quantity: 1,
+        available_quantity: element.available_quantity,
+      };
+      addItem(storage);
+    }
+    // this.Total();
+    this.setState({ isDisabled: false });
+  };
+
   render() {
-    const { categories, products, queryValue, clickCategories } = this.state;
+    const { categories, products, queryValue, clickCategories, isDisabled } = this.state;
     return (
       <main>
         <section
@@ -57,7 +90,9 @@ class Home extends Component {
             <Link
               data-testid="shopping-cart-button"
               to="/Cart"
-            />
+            >
+              Carrinho
+            </Link>
           </div>
           <input
             data-testid="query-input"
@@ -106,6 +141,15 @@ class Home extends Component {
               <h4>{products.title}</h4>
               <h5>{`Preço: R$ ${product.price}`}</h5>
               <img src={ product.thumbnail } alt={ product.title } />
+              <button
+                name="product-add-to-cart"
+                data-testid="product-add-to-cart"
+                type="button"
+                disabled={ isDisabled }
+                onClick={ () => this.storageProducts(item) }
+              >
+                Adicionar ao carrinho
+              </button>
             </div>
           ))}
           { products.length === 0 && (
