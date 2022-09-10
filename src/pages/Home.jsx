@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { getCategories, getProductsFromCategoryAndQuery, catById } from '../services/api';
+import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
+import { addItem, getCartItems, removeItem } from '../services/itemCartAPI';
 import '../CSS/home.css';
 
 class Home extends Component {
@@ -11,6 +12,7 @@ class Home extends Component {
       queryValue: '',
       products: [],
       clickCategories: [],
+      isDisabled: false,
     };
   }
 
@@ -31,21 +33,54 @@ class Home extends Component {
 
   handleClickProducts = async () => {
     const { queryValue } = this.state;
-    const fetchProducts = await getProductsFromCategoryAndQuery(undefined, queryValue);
+    const fetchProducts = await getProductsFromCategoryAndQuery(queryValue);
+    const { results } = fetchProducts;
     this.setState({
-      products: fetchProducts.results,
+      products: results,
     });
   };
 
-  handleClickCategories = async (id) => {
-    const products = await catById(id);
-    this.setState({
-      clickCategories: products.results,
-    });
+  // handleClickCategories = async (id) => {
+  //   const products = await catById(id);
+  //   this.setState({
+  //     clickCategories: products.results,
+  //   });
+  // };
+
+  storageProducts = (element) => {
+    this.setState({ isDisabled: true });
+    const productList = getCartItems();
+    const itemInCart = productList.some((item) => item.title === element.title);
+    if (itemInCart) {
+      productList.forEach((secondItem) => {
+        if (secondItem.title === element.title) {
+          removeItem(secondItem);
+          const storage = {
+            title: secondItem.title,
+            price: secondItem.price,
+            thumbnail: secondItem.thumbnail,
+            quantity: secondItem.quantity + 1,
+            available_quantity: secondItem.available_quantity,
+          };
+          addItem(storage);
+        }
+      });
+    } else {
+      const storage = {
+        title: element.title,
+        price: element.price,
+        thumbnail: element.thumbnail,
+        quantity: 1,
+        available_quantity: element.available_quantity,
+      };
+      addItem(storage);
+    }
+    // this.Total();
+    this.setState({ isDisabled: false });
   };
 
   render() {
-    const { categories, products, queryValue, clickCategories } = this.state;
+    const { categories, products, queryValue, clickCategories, isDisabled } = this.state;
     return (
       <main>
         <section
@@ -77,7 +112,13 @@ class Home extends Component {
               data-testid="category"
               name="category"
               key={ category.id }
-              onClick={ () => this.handleClickCategories(category.id) }
+              onClick={ async () => {
+                const product = await getProductsFromCategoryAndQuery(category.name);
+                const { results } = product;
+                this.setState({
+                  products: results,
+                });
+              } }
             >
               {category.name}
             </button>
@@ -87,11 +128,11 @@ class Home extends Component {
           {
             clickCategories.map((product) => (
               <Link
-                to={ `/ProductsDetails/${product.id}` }
+                to={ `/productsDetails/${product.id}` }
                 key={ product.id }
                 data-testid="product-detail-link"
               >
-                <div key={ product.id } data-testid="product">
+                <div data-testid="product">
                   <h4>{product.title}</h4>
                   <h5>{`Preço: R$ ${product.price}`}</h5>
                   <img src={ product.thumbnail } alt={ product.title } />
@@ -101,22 +142,34 @@ class Home extends Component {
           }
         </section>
         <section className="product">
-          {products.map((product) => (
-            <Link
-              to={ `/ProductsDetails/${product.id}` }
-              key={ product.id }
-              data-testid="product-detail-link"
-            >
-              <div data-testid="product" className="products">
-                <h4>{products.title}</h4>
-                <h5>{`Preço: R$ ${product.price}`}</h5>
-                <img src={ product.thumbnail } alt={ product.title } />
+          { products.length !== 0 ? (
+            products.map((product, index) => (
+              <div
+                data-testid="product"
+                key={ index }
+              >
+                <Link
+                  to={ `/productsDetails/${product.id}` }
+                  data-testid="product-detail-link"
+                >
+                  <h4>{product.title}</h4>
+                  <h5>{`Preço: R$ ${product.price}`}</h5>
+                  <img
+                    src={ product.thumbnail }
+                    alt={ product.title }
+                  />
+                </Link>
+                <button
+                  type="button"
+                  name="product-add-to-cart"
+                  data-testid="product-add-to-cart"
+                  disabled={ isDisabled }
+                  onClick={ () => this.storageProducts(product) }
+                >
+                  Adicionar ao carrinho
+                </button>
               </div>
-            </Link>
-          ))}
-          { products.length === 0 && (
-            <p>Nenhum produto foi encontrado</p>
-          )}
+            ))) : <p>Nenhum produto foi encontrado</p>}
         </section>
         <div>
           <Link
