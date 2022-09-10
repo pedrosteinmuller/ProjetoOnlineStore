@@ -22,17 +22,17 @@ class Cart extends Component {
     this.setState({ products });
   };
 
-  amouthCart = (element) => {
+  amouthCart = (unit) => {
     const productList = getCartItems();
     productList.forEach((item) => {
-      if (item.title === element.title && item.quantity < item.available_quantity) {
-        removeItem(element);
+      if (item.title === unit.title && item.quantity < item.available_quantity) {
+        removeItem(unit);
         const storage = {
-          title: element.title,
-          price: element.price,
-          thumbnail: element.thumbnail,
-          quantity: element.quantity + 1,
-          available_quantity: element.available_quantity,
+          title: unit.title,
+          price: unit.price,
+          thumbnail: unit.thumbnail,
+          quantity: unit.quantity + 1,
+          available_quantity: unit.available_quantity,
         };
         addItem(storage);
       }
@@ -41,17 +41,17 @@ class Cart extends Component {
     this.setState({ products });
   };
 
-  decreaseCart = (element) => {
+  decreaseCart = (unit) => {
     const productList = getCartItems();
     productList.forEach((item) => {
-      if (item.title === element.title) {
-        removeItem(element);
+      if (item.title === unit.title) {
+        removeItem(unit);
         const storage = {
-          title: element.title,
-          price: element.price,
-          thumbnail: element.thumbnail,
-          quantity: element.quantity - 1,
-          available_quantity: element.available_quantity,
+          title: unit.title,
+          price: unit.price,
+          thumbnail: unit.thumbnail,
+          quantity: unit.quantity - 1,
+          available_quantity: unit.available_quantity,
         };
         if (storage.quantity > 0) {
           addItem(storage);
@@ -62,10 +62,10 @@ class Cart extends Component {
     this.setState({ products });
   };
 
-  // moveToCheckout = () => {
-  //   const { history } = this.props;
-  //   history.push('/cart/checkout');
-  // };
+  moveCheckout = () => {
+    const { history } = this.props;
+    history.push('/cart/checkout');
+  };
 
   render() {
     const { products } = this.state;
@@ -78,29 +78,36 @@ class Cart extends Component {
           </p>
         ) }
         {products.length !== 0 ? products
-          .map((element, id) => (
-            <div key={ id }>
-              <p data-testid="shopping-cart-product-name">{element.title}</p>
-              <p>{element.price}</p>
-              <p data-testid="shopping-cart-product-quantity">{element.quantity}</p>
+          .map((unit) => (
+            <div
+              key={ unit.id }
+            >
+              <p data-testid="shopping-cart-product-name">{unit.title}</p>
+              <img
+                src={ unit.thumbnail }
+                alt={ unit.title }
+              />
+              <p>{unit.price}</p>
+              <p data-testid="shopping-cart-product-quantity">{unit.quantity}</p>
+
               <button
                 data-testid="remove-product"
                 type="button"
-                onClick={ () => this.removeAllItens(element.title) }
+                onClick={ () => this.removeAllItens(unit.title) }
               >
                 Remover
               </button>
               <button
                 data-testid="product-decrease-quantity"
                 type="button"
-                onClick={ () => this.decreaseCart(element) }
+                onClick={ () => this.decreaseCart(unit) }
               >
                 -
               </button>
               <button
                 data-testid="product-increase-quantity"
                 type="button"
-                onClick={ () => this.amouthCart(element) }
+                onClick={ () => this.amouthCart(unit) }
               >
                 +
               </button>
@@ -109,7 +116,7 @@ class Cart extends Component {
         <button
           data-testid="checkout-products"
           type="button"
-          onClick={ this.moveToCheckout }
+          onClick={ this.moveCheckout }
         >
           Finalizar compra
         </button>
@@ -124,3 +131,4 @@ Cart.propTypes = {
 };
 
 export default Cart;
+// data-testid="shopping-cart-product-name"

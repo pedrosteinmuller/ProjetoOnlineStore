@@ -33,9 +33,10 @@ class Home extends Component {
 
   handleClickProducts = async () => {
     const { queryValue } = this.state;
-    const fetchProducts = await getProductsFromCategoryAndQuery(undefined, queryValue);
+    const fetchProducts = await getProductsFromCategoryAndQuery(queryValue);
+    const { results } = fetchProducts;
     this.setState({
-      products: fetchProducts.results,
+      products: results,
     });
   };
 
@@ -49,8 +50,8 @@ class Home extends Component {
   storageProducts = (element) => {
     this.setState({ isDisabled: true });
     const productList = getCartItems();
-    const test = productList.some((item) => item.title === element.title);
-    if (test) {
+    const itemInCart = productList.some((item) => item.title === element.title);
+    if (itemInCart) {
       productList.forEach((secondItem) => {
         if (secondItem.title === element.title) {
           removeItem(secondItem);
@@ -131,7 +132,7 @@ class Home extends Component {
                 key={ product.id }
                 data-testid="product-detail-link"
               >
-                <div key={ product.id } data-testid="product">
+                <div data-testid="product">
                   <h4>{product.title}</h4>
                   <h5>{`Preço: R$ ${product.price}`}</h5>
                   <img src={ product.thumbnail } alt={ product.title } />
