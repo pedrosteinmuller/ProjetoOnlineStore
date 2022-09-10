@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { getCategories, getProductsFromCategoryAndQuery, catById } from '../services/api';
+import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
+import { addItem, getCartItems, removeItem } from '../services/itemCartAPI';
 import '../CSS/home.css';
 
 class Home extends Component {
@@ -38,12 +39,12 @@ class Home extends Component {
     });
   };
 
-  handleClickCategories = async (id) => {
-    const products = await catById(id);
-    this.setState({
-      clickCategories: products.results,
-    });
-  };
+  // handleClickCategories = async (id) => {
+  //   const products = await catById(id);
+  //   this.setState({
+  //     clickCategories: products.results,
+  //   });
+  // };
 
   storageProducts = (element) => {
     this.setState({ isDisabled: true });
@@ -86,14 +87,6 @@ class Home extends Component {
           className="categories"
         >
           Digite algum termo de pesquisa ou escolha uma categoria.
-          <div>
-            <Link
-              data-testid="shopping-cart-button"
-              to="/Cart"
-            >
-              Carrinho
-            </Link>
-          </div>
           <input
             data-testid="query-input"
             type="text"
@@ -118,7 +111,13 @@ class Home extends Component {
               data-testid="category"
               name="category"
               key={ category.id }
-              onClick={ () => this.handleClickCategories(category.id) }
+              onClick={ async () => {
+                const product = await getProductsFromCategoryAndQuery(category.name);
+                const { results } = product;
+                this.setState({
+                  products: results,
+                });
+              } }
             >
               {category.name}
             </button>
@@ -127,35 +126,58 @@ class Home extends Component {
         <section>
           {
             clickCategories.map((product) => (
-              <div key={ product.id } data-testid="product">
-                <h4>{product.title}</h4>
-                <h5>{`Preço: R$ ${product.price}`}</h5>
-                <img src={ product.thumbnail } alt={ product.title } />
-              </div>
+              <Link
+                to={ `/productsDetails/${product.id}` }
+                key={ product.id }
+                data-testid="product-detail-link"
+              >
+                <div key={ product.id } data-testid="product">
+                  <h4>{product.title}</h4>
+                  <h5>{`Preço: R$ ${product.price}`}</h5>
+                  <img src={ product.thumbnail } alt={ product.title } />
+                </div>
+              </Link>
             ))
           }
         </section>
         <section className="product">
-          {products.map((product) => (
-            <div data-testid="product" key={ product.id } className="products">
-              <h4>{products.title}</h4>
-              <h5>{`Preço: R$ ${product.price}`}</h5>
-              <img src={ product.thumbnail } alt={ product.title } />
-              <button
-                name="product-add-to-cart"
-                data-testid="product-add-to-cart"
-                type="button"
-                disabled={ isDisabled }
-                onClick={ () => this.storageProducts(item) }
+          { products.length !== 0 ? (
+            products.map((product, index) => (
+              <div
+                data-testid="product"
+                key={ index }
               >
-                Adicionar ao carrinho
-              </button>
-            </div>
-          ))}
-          { products.length === 0 && (
-            <p>Nenhum produto foi encontrado</p>
-          )}
+                <Link
+                  to={ `/productsDetails/${product.id}` }
+                  data-testid="product-detail-link"
+                >
+                  <h4>{product.title}</h4>
+                  <h5>{`Preço: R$ ${product.price}`}</h5>
+                  <img
+                    src={ product.thumbnail }
+                    alt={ product.title }
+                  />
+                </Link>
+                <button
+                  type="button"
+                  name="product-add-to-cart"
+                  data-testid="product-add-to-cart"
+                  disabled={ isDisabled }
+                  onClick={ () => this.storageProducts(product) }
+                >
+                  Adicionar ao carrinho
+                </button>
+              </div>
+            ))) : <p>Nenhum produto foi encontrado</p>}
         </section>
+        <div>
+          <Link
+            data-testid="shopping-cart-button"
+            to="/Cart"
+          >
+            Carrinho
+          </Link>
+        </div>
       </main>
     );
   }
