@@ -52,11 +52,6 @@ class ProductsDetails extends Component {
     // this.Total(); 13
   };
 
-  // handleChange = ({ target }) => {
-  //   const { name, value } = target;
-  //   this.setState({ [name]: value });
-  // };
-
   render() {
     const { cartProducts } = this.state;
     return (
@@ -97,9 +92,7 @@ class ProductsDetails extends Component {
               id="email"
               type="email"
               name="emailUser"
-              // value={ emailUser }
               placeholder="exemplo@exemplo.com"
-              // onChange={ this.handleChange }
               required
             />
           </label>
