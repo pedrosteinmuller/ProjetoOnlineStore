@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getProductById } from '../services/api';
 import StarRating from '../components/Rate';
+import { addItem, getCartItems, removeItem } from '../services/itemCartAPI';
 
 class ProductsDetails extends Component {
   state = {
@@ -20,6 +21,41 @@ class ProductsDetails extends Component {
       cartProducts: details,
     });
   };
+
+  storageProducts = (element) => {
+    const productList = getCartItems();
+    const itemInCart = productList.some((item) => item.title === element.title);
+    if (itemInCart) {
+      productList.forEach((secondItem) => {
+        if (secondItem.title === element.title) {
+          removeItem(secondItem);
+          const storage = {
+            title: secondItem.title,
+            price: secondItem.price,
+            thumbnail: secondItem.thumbnail,
+            quantity: secondItem.quantity + 1,
+            available_quantity: secondItem.available_quantity,
+          };
+          addItem(storage);
+        }
+      });
+    } else {
+      const storage = {
+        title: element.title,
+        price: element.price,
+        thumbnail: element.thumbnail,
+        quantity: 1,
+        available_quantity: element.available_quantity,
+      };
+      addItem(storage);
+    }
+    // this.Total(); 13
+  };
+
+  // handleChange = ({ target }) => {
+  //   const { name, value } = target;
+  //   this.setState({ [name]: value });
+  // };
 
   render() {
     const { cartProducts } = this.state;
@@ -44,6 +80,15 @@ class ProductsDetails extends Component {
             <p data-testid="product-detail-price">{`Preço: ${cartProducts.price}`}</p>
           </div>
         </div>
+        <div>
+          <button
+            type="button"
+            data-testid="product-detail-add-to-cart"
+            onClick={ () => this.storageProducts(cartProducts) }
+          >
+            Adicionar ao carrinho
+          </button>
+        </div>
         <form>
           <label htmlFor="email">
             Email:
@@ -51,8 +96,10 @@ class ProductsDetails extends Component {
               data-testid="product-detail-email"
               id="email"
               type="email"
-              name="email"
+              name="emailUser"
+              // value={ emailUser }
               placeholder="exemplo@exemplo.com"
+              // onChange={ this.handleChange }
               required
             />
           </label>
