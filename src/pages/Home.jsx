@@ -49,7 +49,6 @@ class Home extends Component {
   storageProducts = (element) => {
     this.setState({ isDisabled: true });
     const productList = getCartItems();
-    // console.log(productList);
     const itemInCart = productList.some((item) => item.title === element.title);
     if (itemInCart) {
       productList.forEach((secondItem) => {
@@ -175,7 +174,6 @@ class Home extends Component {
                     Adicionar ao carrinho
                   </button>
                 </div>
-
               </div>
             ))) : <p>Nenhum produto foi encontrado</p>}
         </section>
