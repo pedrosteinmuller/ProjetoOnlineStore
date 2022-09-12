@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getProductById } from '../services/api';
+import StarRating from '../components/Rate';
 
 class ProductsDetails extends Component {
   state = {
@@ -15,7 +16,6 @@ class ProductsDetails extends Component {
   productDetails = async () => {
     const { match: { params: { id } } } = this.props;
     const details = await getProductById(id);
-    console.log(details);
     this.setState({
       cartProducts: details,
     });
@@ -44,6 +44,35 @@ class ProductsDetails extends Component {
             <p data-testid="product-detail-price">{`Preço: ${cartProducts.price}`}</p>
           </div>
         </div>
+        <form>
+          <label htmlFor="email">
+            Email:
+            <input
+              data-testid="product-detail-email"
+              id="email"
+              type="email"
+              name="email"
+              placeholder="exemplo@exemplo.com"
+              required
+            />
+          </label>
+          <label htmlFor="usermensage">
+            <textarea
+              id="usermensage"
+              cols="40"
+              rowls="10"
+              placeholder="Mensagem (opcional)"
+              data-testid="product-detail-evaluation"
+            />
+          </label>
+          <button
+            type="submit"
+            data-testid="submit-review-btn"
+          >
+            Avaliar
+          </button>
+          <StarRating required />
+        </form>
       </div>
     );
   }

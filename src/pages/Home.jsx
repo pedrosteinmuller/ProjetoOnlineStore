@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
+import { getCategories, getProductsFromCategoryAndQuery, catById } from '../services/api';
 import { addItem, getCartItems, removeItem } from '../services/itemCartAPI';
 import '../CSS/home.css';
 
@@ -24,7 +24,6 @@ class Home extends Component {
   }
 
   handleInput = ({ target }) => {
-    console.log(target);
     const { value } = target;
     this.setState({
       queryValue: value,
@@ -33,23 +32,24 @@ class Home extends Component {
 
   handleClickProducts = async () => {
     const { queryValue } = this.state;
-    const fetchProducts = await getProductsFromCategoryAndQuery(queryValue);
+    const fetchProducts = await getProductsFromCategoryAndQuery(undefined, queryValue);
     const { results } = fetchProducts;
     this.setState({
       products: results,
     });
   };
 
-  // handleClickCategories = async (id) => {
-  //   const products = await catById(id);
-  //   this.setState({
-  //     clickCategories: products.results,
-  //   });
-  // };
+  handleClickCategories = async (id) => {
+    const products = await catById(id);
+    this.setState({
+      clickCategories: products.results,
+    });
+  };
 
   storageProducts = (element) => {
     this.setState({ isDisabled: true });
     const productList = getCartItems();
+    // console.log(productList);
     const itemInCart = productList.some((item) => item.title === element.title);
     if (itemInCart) {
       productList.forEach((secondItem) => {
@@ -75,7 +75,7 @@ class Home extends Component {
       };
       addItem(storage);
     }
-    // this.Total();
+    // this.Total(); 13
     this.setState({ isDisabled: false });
   };
 
@@ -112,13 +112,7 @@ class Home extends Component {
               data-testid="category"
               name="category"
               key={ category.id }
-              onClick={ async () => {
-                const product = await getProductsFromCategoryAndQuery(category.name);
-                const { results } = product;
-                this.setState({
-                  products: results,
-                });
-              } }
+              onClick={ () => this.handleClickCategories(category.id) }
             >
               {category.name}
             </button>
@@ -127,37 +121,16 @@ class Home extends Component {
         <section>
           {
             clickCategories.map((product) => (
-              <Link
-                to={ `/productsDetails/${product.id}` }
-                key={ product.id }
-                data-testid="product-detail-link"
-              >
-                <div data-testid="product">
-                  <h4>{product.title}</h4>
-                  <h5>{`Preço: R$ ${product.price}`}</h5>
-                  <img src={ product.thumbnail } alt={ product.title } />
-                </div>
-              </Link>
-            ))
-          }
-        </section>
-        <section className="product">
-          { products.length !== 0 ? (
-            products.map((product, index) => (
-              <div
-                data-testid="product"
-                key={ index }
-              >
+              <div key={ product.id }>
                 <Link
-                  to={ `/productsDetails/${product.id}` }
+                  to={ `/ProductsDetails/${product.id}` }
                   data-testid="product-detail-link"
                 >
-                  <h4>{product.title}</h4>
-                  <h5>{`Preço: R$ ${product.price}`}</h5>
-                  <img
-                    src={ product.thumbnail }
-                    alt={ product.title }
-                  />
+                  <div data-testid="product">
+                    <h4>{product.title}</h4>
+                    <h5>{`Preço: R$ ${product.price}`}</h5>
+                    <img src={ product.thumbnail } alt={ product.title } />
+                  </div>
                 </Link>
                 <button
                   type="button"
@@ -168,6 +141,41 @@ class Home extends Component {
                 >
                   Adicionar ao carrinho
                 </button>
+              </div>
+            ))
+
+          }
+        </section>
+        <section className="product">
+          { products.length !== 0 ? (
+            products.map((product, index) => (
+              <div
+                data-testid="product"
+                key={ index }
+              >
+                <Link
+                  to={ `/ProductsDetails/${product.id}` }
+                  data-testid="product-detail-link"
+                >
+                  <h4>{product.title}</h4>
+                  <h5>{`Preço: R$ ${product.price}`}</h5>
+                  <img
+                    src={ product.thumbnail }
+                    alt={ product.title }
+                  />
+                </Link>
+                <div>
+                  <button
+                    type="button"
+                    name="product-add-to-cart"
+                    data-testid="product-add-to-cart"
+                    disabled={ isDisabled }
+                    onClick={ () => this.storageProducts(product) }
+                  >
+                    Adicionar ao carrinho
+                  </button>
+                </div>
+
               </div>
             ))) : <p>Nenhum produto foi encontrado</p>}
         </section>

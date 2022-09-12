@@ -10,7 +10,8 @@ main {
 .product {
   align-items: center;
   display: flex;
-  flex-wrap: wrap;
+  flex-flow: wrap;
+  flex-direction: center;
   justify-content: center;
   margin-top: 20px;
 }
@@ -29,6 +30,12 @@ main {
   margin-right: 20px;
   min-width: 250px;
   padding: 20px;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 /* css feito com ajuda do amigo Higor Maranhão para organização dos itens
