@@ -10,8 +10,8 @@ class Cart extends Component {
     };
   }
 
-  async componentDidMount() {
-    const products = await getCartItems();
+  componentDidMount() {
+    const products = getCartItems();
     this.setState({ products });
   }
 
@@ -62,64 +62,63 @@ class Cart extends Component {
     this.setState({ products });
   };
 
-  moveCheckout = () => {
-    const { history } = this.props;
-    history.push('/cart/checkout');
-  };
+  // moveCheckout = () => {
+  //   const { history } = this.props;
+  //   history.push('/cart/checkout');
+  // };
 
   render() {
     const { products } = this.state;
-
     return (
       <section>
-        {products.length === 0 && (
+        {products.length === 0 ? (
           <p data-testid="shopping-cart-empty-message">
             Seu carrinho está vazio
           </p>
-        ) }
-        {products.length !== 0 ? products
-          .map((unit) => (
-            <div
-              key={ unit.id }
-            >
-              <p data-testid="shopping-cart-product-name">{unit.title}</p>
-              <img
-                src={ unit.thumbnail }
-                alt={ unit.title }
-              />
-              <p>{unit.price}</p>
-              <p data-testid="shopping-cart-product-quantity">{unit.quantity}</p>
+        ) : (
+          products
+            .map((unit) => (
+              <div
+                key={ unit.id }
+              >
+                <h1 data-testid="shopping-cart-product-name">{unit.title}</h1>
+                <img
+                  src={ unit.thumbnail }
+                  alt={ unit.title }
+                />
+                <p>{unit.price}</p>
+                <p data-testid="shopping-cart-product-quantity">{unit.quantity}</p>
 
-              <button
-                data-testid="remove-product"
-                type="button"
-                onClick={ () => this.removeAllItens(unit.title) }
-              >
-                Remover
-              </button>
-              <button
-                data-testid="product-decrease-quantity"
-                type="button"
-                onClick={ () => this.decreaseCart(unit) }
-              >
-                -
-              </button>
-              <button
-                data-testid="product-increase-quantity"
-                type="button"
-                onClick={ () => this.amouthCart(unit) }
-              >
-                +
-              </button>
-            </div>
-          )) : null}
-        <button
+                <button
+                  data-testid="remove-product"
+                  type="button"
+                  onClick={ () => this.removeAllItens(unit.title) }
+                >
+                  Remover
+                </button>
+                <button
+                  data-testid="product-decrease-quantity"
+                  type="button"
+                  onClick={ () => this.decreaseCart(unit) }
+                >
+                  -
+                </button>
+                <button
+                  data-testid="product-increase-quantity"
+                  type="button"
+                  onClick={ () => this.amouthCart(unit) }
+                >
+                  +
+                </button>
+              </div>
+            )))}
+        {/* <button
           data-testid="checkout-products"
           type="button"
           onClick={ this.moveCheckout }
         >
           Finalizar compra
-        </button>
+        </button> */}
       </section>
     );
   }
@@ -131,4 +130,3 @@ Cart.propTypes = {
 };
 
 export default Cart;
-// data-testid="shopping-cart-product-name"
