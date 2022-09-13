@@ -133,7 +133,6 @@ class Home extends Component {
                     type="button"
                     name="product-add-to-cart"
                     data-testid="product-add-to-cart"
-                    disabled={ isDisabled }
                     onClick={ () => storageProducts(product) }
                   >
                     Adicionar ao carrinho
