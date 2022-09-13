@@ -9,11 +9,11 @@ class ProductsDetails extends Component {
   state = {
     cartProducts: {},
     userEmail: '',
-    textAreaField: '',
+    userText: '',
     rating: 0,
     hover: 0,
-    validateRating: false,
-    validateEmail: false,
+    valRt: false,
+    valEm: false,
     evaluations: [],
   };
 
@@ -29,9 +29,7 @@ class ProductsDetails extends Component {
       cartProducts: details,
     });
     if (savedReviews) {
-      this.setState({
-        evaluations: [...savedReviews],
-      });
+      this.setState({ evaluations: [...savedReviews] });
     }
   };
 
@@ -65,19 +63,6 @@ class ProductsDetails extends Component {
     // this.Total(); 13
   };
 
-  ratingButtons = (stars) => {
-    this.setState({
-      rating: stars,
-      validateRating: true,
-    });
-  };
-
-  ratingHover = (stars) => {
-    this.setState({
-      hover: stars,
-    });
-  };
-
   handleChange = (e) => {
     const { userEmail } = this.state;
     this.setState({
@@ -90,7 +75,7 @@ class ProductsDetails extends Component {
       );
     if (patternEmail) {
       this.setState({
-        validateEmail: true,
+        valEm: true,
       });
     }
     // https://stackoverflow.com/questions/41348459/regex-in-react-email-validation -> referencia para fazer a validacao
@@ -98,13 +83,13 @@ class ProductsDetails extends Component {
 
   handleClickSubmit = (e) => {
     e.preventDefault();
-    const { userEmail, textAreaField, rating, evaluations } = this.state;
+    const { userEmail, userText, rating, evaluations } = this.state;
     const { match: { params: { id } } } = this.props;
-    const posts = { email: userEmail, text: textAreaField, rating };
+    const posts = { email: userEmail, text: userText, rating };
     this.setState((prevState) => ({
       evaluations: [...prevState.evaluations, posts],
       userEmail: '',
-      textAreaField: '',
+      userText: '',
       rating: 0,
       hover: 0,
     }));
@@ -112,16 +97,9 @@ class ProductsDetails extends Component {
   };
 
   render() {
-    const {
-      rating,
-      hover,
-      cartProducts,
-      userEmail,
-      textAreaField,
-      validateEmail,
-      validateRating,
-      evaluations } = this.state;
-    const validation = validateEmail && validateRating;
+    const { rating, hover, cartProducts, userEmail,
+      userText, valEm, valRt, evaluations } = this.state;
+    const validation = valEm && valRt;
     const starsNumber = 5;
     return (
       <div>
@@ -176,11 +154,11 @@ class ProductsDetails extends Component {
               cols="40"
               rowls="10"
               name="usermensage"
-              value={ textAreaField }
+              value={ userText }
               placeholder="Mensagem (opcional)"
               data-testid="product-detail-evaluation"
               onChange={ (e) => {
-                this.setState({ textAreaField: e.target.value });
+                this.setState({ userText: e.target.value });
               } }
             />
           </label>
@@ -201,9 +179,9 @@ class ProductsDetails extends Component {
                   key={ index }
                   value={ rating }
                   className={ index <= (hover || rating) ? 'on' : 'off' }
-                  onClick={ () => this.ratingButtons(index) }
-                  onMouseEnter={ () => this.ratingHover(index) }
-                  onMouseLeave={ () => this.ratingHover(rating) }
+                  onClick={ () => this.setState({ rating: index, valRt: true }) }
+                  onMouseEnter={ () => this.setState({ hover: index }) }
+                  onMouseLeave={ () => this.setState({ rating }) }
                   // https://www.w3schools.com/jsref/event_onmouseenter.asp
                   // referencia para realizar o StarRating
                   // https://www.youtube.com/watch?v=eDw46GYAIDQ
