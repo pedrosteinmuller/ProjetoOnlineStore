@@ -2,7 +2,8 @@ import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { getCategories, getProductsFromCategoryAndQuery, catById } from '../services/api';
 import '../CSS/home.css';
-import storageProducts from '../services/storageProducts';
+// import storageProducts from '../services/storageProducts';
+import { getCartItems, removeItem, addItem } from '../services/itemCartAPI';
 
 class Home extends Component {
   constructor() {
@@ -12,11 +13,13 @@ class Home extends Component {
       queryValue: '',
       products: [],
       clickCategories: [],
+      sumCartItens: 0,
     };
   }
 
   async componentDidMount() {
     const categories = await getCategories();
+    this.totalCartItens();
     this.setState({
       categories,
     });
@@ -45,8 +48,52 @@ class Home extends Component {
     });
   };
 
+  storageProducts = (element) => {
+    const productList = getCartItems();
+    const itemInCart = productList.some((item) => item.title === element.title);
+    if (itemInCart) {
+      productList.forEach((secondItem) => {
+        if (secondItem.title === element.title) {
+          removeItem(secondItem);
+          const storage = {
+            title: secondItem.title,
+            price: secondItem.price,
+            thumbnail: secondItem.thumbnail,
+            quantity: secondItem.quantity + 1,
+            available_quantity: secondItem.available_quantity,
+          };
+          addItem(storage);
+        }
+      });
+    } else {
+      const storage = {
+        title: element.title,
+        price: element.price,
+        thumbnail: element.thumbnail,
+        quantity: 1,
+        available_quantity: element.available_quantity,
+      };
+      addItem(storage);
+    }
+    this.totalCartItens();
+  };
+
+  totalCartItens() {
+    const totalItens = getCartItems();
+
+    if (totalItens) {
+      let cartItens = 0;
+      totalItens.forEach((item) => {
+        cartItens += item.quantity;
+        this.setState({ sumCartItens: cartItens });
+      });
+    }
+  }
+
   render() {
-    const { categories, products, queryValue, clickCategories } = this.state;
+    const {
+      categories, products, queryValue, clickCategories, sumCartItens,
+    } = this.state;
     return (
       <main>
         <section
@@ -69,6 +116,16 @@ class Home extends Component {
           >
             Pesquisar
           </button>
+          <div>
+            <Link
+              data-testid="shopping-cart-button"
+              to="/Cart"
+            >
+              <p data-testid="shopping-cart-size">
+                {`Carrinho: ${sumCartItens}`}
+              </p>
+            </Link>
+          </div>
         </section>
         <section>
           {categories.map((category) => (
@@ -102,7 +159,7 @@ class Home extends Component {
                   type="button"
                   name="product-add-to-cart"
                   data-testid="product-add-to-cart"
-                  onClick={ () => storageProducts(product) }
+                  onClick={ () => this.storageProducts(product) }
                 >
                   Adicionar ao carrinho
                 </button>
@@ -133,7 +190,7 @@ class Home extends Component {
                     type="button"
                     name="product-add-to-cart"
                     data-testid="product-add-to-cart"
-                    onClick={ () => storageProducts(product) }
+                    onClick={ () => this.storageProducts(product) }
                   >
                     Adicionar ao carrinho
                   </button>
@@ -141,14 +198,6 @@ class Home extends Component {
               </div>
             ))) : <p>Nenhum produto foi encontrado</p>}
         </section>
-        <div>
-          <Link
-            data-testid="shopping-cart-button"
-            to="/Cart"
-          >
-            Carrinho
-          </Link>
-        </div>
       </main>
     );
   }

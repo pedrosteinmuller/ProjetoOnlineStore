@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getProductById } from '../services/api';
-import storageProducts from '../services/storageProducts';
+// import storageProducts from '../services/storageProducts';
+import { getCartItems, removeItem, addItem } from '../services/itemCartAPI';
 import '../CSS/StarRating.css';
 
 class ProductsDetails extends Component {
@@ -15,10 +16,12 @@ class ProductsDetails extends Component {
     valRt: false,
     valEm: false,
     evaluations: [],
+    sumCartItens: 0,
   };
 
   componentDidMount() {
     this.productDetails();
+    this.totalCartItens();
   }
 
   productDetails = async () => {
@@ -66,14 +69,60 @@ class ProductsDetails extends Component {
     localStorage.setItem(id, JSON.stringify(evaluations));
   };
 
+  storageProducts = (element) => {
+    const productList = getCartItems();
+    const itemInCart = productList.some((item) => item.title === element.title);
+    if (itemInCart) {
+      productList.forEach((secondItem) => {
+        if (secondItem.title === element.title) {
+          removeItem(secondItem);
+          const storage = {
+            title: secondItem.title,
+            price: secondItem.price,
+            thumbnail: secondItem.thumbnail,
+            quantity: secondItem.quantity + 1,
+            available_quantity: secondItem.available_quantity,
+          };
+          addItem(storage);
+        }
+      });
+    } else {
+      const storage = {
+        title: element.title,
+        price: element.price,
+        thumbnail: element.thumbnail,
+        quantity: 1,
+        available_quantity: element.available_quantity,
+      };
+      addItem(storage);
+    }
+    this.totalCartItens();
+  };
+
+  totalCartItens() {
+    const totalItens = getCartItems();
+
+    if (totalItens) {
+      let cartItens = 0;
+      totalItens.forEach((item) => {
+        cartItens += item.quantity;
+        this.setState({ sumCartItens: cartItens });
+      });
+    }
+  }
+
   render() {
     const { rating, hover, cartProducts, userEmail,
-      userText, valEm, valRt, evaluations } = this.state;
+      userText, valEm, valRt, evaluations, sumCartItens } = this.state;
     const validation = valEm && valRt;
     const starsNumber = 5;
     return (
       <div>
-        <h1>Carrinho de produtos</h1>
+        <h1 data-testid="shopping-cart-size">
+          `Carrinho: $
+          {sumCartItens}
+          `
+        </h1>
         <div>
           <Link to="/Cart" data-testid="shopping-cart-button">
             Carrinho de compras
@@ -96,7 +145,7 @@ class ProductsDetails extends Component {
           <button
             type="button"
             data-testid="product-detail-add-to-cart"
-            onClick={ () => storageProducts(cartProducts) }
+            onClick={ () => this.storageProducts(cartProducts) }
           >
             Adicionar ao carrinho
           </button>
