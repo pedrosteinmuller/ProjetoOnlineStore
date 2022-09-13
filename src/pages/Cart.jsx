@@ -79,7 +79,7 @@ class Cart extends Component {
           products
             .map((unit) => (
               <div
-                key={ unit.id }
+                key={ unit.title }
               >
                 <h1 data-testid="shopping-cart-product-name">{unit.title}</h1>
                 <img
