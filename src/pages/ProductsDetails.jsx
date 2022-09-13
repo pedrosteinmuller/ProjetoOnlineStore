@@ -120,13 +120,12 @@ class ProductsDetails extends Component {
       <div>
         <h1 data-testid="shopping-cart-size">
           Carrinho de compras
+          <p>
+            {`Carrinho: ${sumCartItens}`}
+          </p>
         </h1>
         <div>
-          <Link to="/Cart" data-testid="shopping-cart-button">
-            <p>
-              {`Carrinho: ${sumCartItens}`}
-            </p>
-          </Link>
+          <Link to="/Cart" data-testid="shopping-cart-button" />
         </div>
         <div>
           <div>
