@@ -62,10 +62,10 @@ class Cart extends Component {
     this.setState({ products });
   };
 
-  // moveCheckout = () => {
-  //   const { history } = this.props;
-  //   history.push('/cart/checkout');
-  // };
+  moveCheckout = () => {
+    const { history } = this.props;
+    history.push('/cart/checkout');
+  };
 
   render() {
     const { products } = this.state;
@@ -79,7 +79,7 @@ class Cart extends Component {
           products
             .map((unit) => (
               <div
-                key={ unit.id }
+                key={ unit.title }
               >
                 <h1 data-testid="shopping-cart-product-name">{unit.title}</h1>
                 <img
@@ -112,13 +112,13 @@ class Cart extends Component {
                 </button>
               </div>
             )))}
-        {/* <button
+        <button
           data-testid="checkout-products"
           type="button"
           onClick={ this.moveCheckout }
         >
           Finalizar compra
-        </button> */}
+        </button>
       </section>
     );
   }

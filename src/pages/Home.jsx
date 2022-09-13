@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { getCategories, getProductsFromCategoryAndQuery, catById } from '../services/api';
-import { addItem, getCartItems, removeItem } from '../services/itemCartAPI';
 import '../CSS/home.css';
+import storageProducts from '../services/storageProducts';
 
 class Home extends Component {
   constructor() {
@@ -12,7 +12,6 @@ class Home extends Component {
       queryValue: '',
       products: [],
       clickCategories: [],
-      isDisabled: false,
     };
   }
 
@@ -46,40 +45,8 @@ class Home extends Component {
     });
   };
 
-  storageProducts = (element) => {
-    this.setState({ isDisabled: true });
-    const productList = getCartItems();
-    const itemInCart = productList.some((item) => item.title === element.title);
-    if (itemInCart) {
-      productList.forEach((secondItem) => {
-        if (secondItem.title === element.title) {
-          removeItem(secondItem);
-          const storage = {
-            title: secondItem.title,
-            price: secondItem.price,
-            thumbnail: secondItem.thumbnail,
-            quantity: secondItem.quantity + 1,
-            available_quantity: secondItem.available_quantity,
-          };
-          addItem(storage);
-        }
-      });
-    } else {
-      const storage = {
-        title: element.title,
-        price: element.price,
-        thumbnail: element.thumbnail,
-        quantity: 1,
-        available_quantity: element.available_quantity,
-      };
-      addItem(storage);
-    }
-    // this.Total(); 13
-    this.setState({ isDisabled: false });
-  };
-
   render() {
-    const { categories, products, queryValue, clickCategories, isDisabled } = this.state;
+    const { categories, products, queryValue, clickCategories } = this.state;
     return (
       <main>
         <section
@@ -135,14 +102,12 @@ class Home extends Component {
                   type="button"
                   name="product-add-to-cart"
                   data-testid="product-add-to-cart"
-                  disabled={ isDisabled }
-                  onClick={ () => this.storageProducts(product) }
+                  onClick={ () => storageProducts(product) }
                 >
                   Adicionar ao carrinho
                 </button>
               </div>
             ))
-
           }
         </section>
         <section className="product">
@@ -168,8 +133,7 @@ class Home extends Component {
                     type="button"
                     name="product-add-to-cart"
                     data-testid="product-add-to-cart"
-                    disabled={ isDisabled }
-                    onClick={ () => this.storageProducts(product) }
+                    onClick={ () => storageProducts(product) }
                   >
                     Adicionar ao carrinho
                   </button>
