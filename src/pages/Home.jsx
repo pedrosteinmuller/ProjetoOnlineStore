@@ -145,6 +145,11 @@ class Home extends Component {
           {
             clickCategories.map((product) => (
               <div key={ product.id }>
+                {product.shipping.free_shipping === true && (
+                  <p data-testid="free-shipping">
+                    Frete Grátis !
+                  </p>
+                ) }
                 <Link
                   to={ `/ProductsDetails/${product.id}` }
                   data-testid="product-detail-link"
@@ -179,6 +184,7 @@ class Home extends Component {
                   data-testid="product-detail-link"
                 >
                   <h4>{product.title}</h4>
+
                   <h5>{`Preço: R$ ${product.price}`}</h5>
                   <img
                     src={ product.thumbnail }
