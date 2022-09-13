@@ -27,7 +27,18 @@ const storageProducts = (element) => {
     };
     addItem(storage);
   }
-  // this.Total(); 13
+  this.totalCartItens();
 };
+
+// totalCartItens () {
+//   const totalItens = getCartItems();
+
+//   if (totalItens) {
+//     let sumItensCart = 0;
+//     totalItens.forEach((item) => {
+//       sumItensCart += item.quantity
+//     })
+//   }
+// }
 
 export default storageProducts;
