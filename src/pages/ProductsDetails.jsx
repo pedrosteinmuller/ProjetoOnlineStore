@@ -54,8 +54,8 @@ class ProductsDetails extends Component {
     // https://stackoverflow.com/questions/41348459/regex-in-react-email-validation -> referencia para fazer a validacao
   };
 
-  handleClickSubmit = (e) => {
-    e.preventDefault();
+  handleClickSubmit = (event) => {
+    event.preventDefault();
     const { userEmail, userText, rating, evaluations } = this.state;
     const { match: { params: { id } } } = this.props;
     const posts = { email: userEmail, text: userText, rating };
@@ -119,14 +119,13 @@ class ProductsDetails extends Component {
     return (
       <div>
         <h1 data-testid="shopping-cart-size">
-          `Carrinho: $
-          {sumCartItens}
-          `
+          Carrinho de compras
+          <p>
+            {`Carrinho: ${sumCartItens}`}
+          </p>
         </h1>
         <div>
-          <Link to="/Cart" data-testid="shopping-cart-button">
-            Carrinho de compras
-          </Link>
+          <Link to="/Cart" data-testid="shopping-cart-button" />
         </div>
         <div>
           <div>
