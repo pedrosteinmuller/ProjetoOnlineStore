@@ -1,13 +1,17 @@
-# :construction: README customizado em construção ! :construction:
-<!-- Olá, Tryber!
-Esse é apenas um arquivo inicial para o README do seu projeto no qual você pode customizar e reutilizar todas as vezes que for executar o trybe-publisher.
+# Projeto FrontEnd Online Store 🛍
 
-Para deixá-lo com a sua cara, basta alterar o seguinte arquivo da sua máquina: ~/.student-repo-publisher/custom/_NEW_README.md
+Consiste em uma aplicação web, construída em grupo, de um e-commerce utilizando a API do Mercado Livre, com as funcionalidades de busca de produto por nome ou categoria; interação com os produtos deixando comentários e avaliações, adição e remoção de produtos ao carrinho de compra mediante a disponibilidade no estoque e simulação da página de compra dos itens selecionados com as opções de pagamento.
 
-É essencial que você preencha esse documento por conta própria, ok?
-Não deixe de usar nossas dicas de escrita de README de projetos, e deixe sua criatividade brilhar!
-:warning: IMPORTANTE: você precisa deixar nítido:
-- quais arquivos/pastas foram desenvolvidos por você; 
-- quais arquivos/pastas foram desenvolvidos por outra pessoa estudante;
-- quais arquivos/pastas foram desenvolvidos pela Trybe.
--->
+* Construída utilizado React, BrowserRouter e CSS3.
+* Aplicação das metodologia ágeis: Kanban e Scrum.
+
+### Instruções
+
+- Para rodar a aplicação localmente, realize o clone do projeto e utilize os comandos a seguir para inicializar:
+
+```
+npm install // para instalar as dependências
+npm start // para iniciar a aplicação
+```
+
+👨🏻‍💻 **Acessar:** _[Clique Aqui](https://projeto-online-store-three.vercel.app/)_
